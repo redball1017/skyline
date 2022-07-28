@@ -96,3 +96,5 @@ lint/reports/
 # Adreno Validation Layer
 libVkLayer_adreno.so
 upload.bat
+coding-right
+coding-right.pub
