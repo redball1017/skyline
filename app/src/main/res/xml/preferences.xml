@@ -179,7 +179,7 @@
             app:libraryLicense="@string/mpl2_license"
             app:libraryUrl="https://github.com/skyline-emu/skyline"
             app:summary="@string/skyline_license_description"
-            app:title="@string/app_name" />
+            app:title="@string/" />
         <emu.skyline.preference.LicensePreference
             app:libraryCopyright="Copyright (c) Ryujinx Team and Contributors"
             app:libraryLicense="@string/mit_license"
