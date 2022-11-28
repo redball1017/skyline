@@ -59,4 +59,6 @@
     <string name="max_refresh_rate_enabled">将显示刷新率尽可能地调高（将会破坏大部分游戏）</string>
     <string name="max_refresh_rate_disabled">将显示刷新率调至60Hz</string>
     <string name="aspect_ratio">屏幕纵横比</string>
+    <string name="prod_keys">Production Keys</string>
+    <string name="title_keys">Title Keys</string>
 </resources>
