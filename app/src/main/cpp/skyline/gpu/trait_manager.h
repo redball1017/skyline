@@ -46,6 +46,8 @@ namespace skyline::gpu {
         bool supportsSubgroupVote{}; //!< If subgroup votes are supported in shaders with SPV_KHR_subgroup_vote
         bool supportsWideLines{}; //!< If the device supports the 'wideLines' Vulkan feature
         bool supportsDepthClamp{}; //!< If the device supports the 'depthClamp' Vulkan feature
+        bool supportsExtendedDynamicState{}; //!< If the device supports the 'VK_EXT_extended_dynamic_state' Vulkan extension
+        bool supportsNullDescriptor{}; //!< If the device supports the null descriptor feature in the 'VK_EXT_robustness2' Vulkan extension
         u32 subgroupSize{}; //!< Size of a subgroup on the host GPU
 
         std::bitset<7> bcnSupport{}; //!< Bitmask of BCn texture formats supported, it is ordered as BC1, BC2, BC3, BC4, BC5, BC6H and BC7
@@ -62,6 +64,7 @@ namespace skyline::gpu {
             bool relaxedRenderPassCompatibility{}; //!< [Adreno Proprietary/Freedreno] A relaxed version of Vulkan specification's render pass compatibility clause which allows for caching pipeline objects for multi-subpass renderpasses, this is intentionally disabled by default as it requires testing prior to enabling
             bool brokenPushDescriptors{}; //!< [Adreno Proprietary] A bug that causes push descriptor updates to ignored by the driver in certain situations
             bool brokenSpirvPositionInput{}; //!< [Adreno Proprietary] A bug that causes the shader compiler to fail on shaders with vertex position inputs not contained within a struct
+            bool brokenComputeShaders{}; //!< [ARM Proprietary] A bug that causes compute shaders in some games to crash the GPU
 
             u32 maxSubpassCount{std::numeric_limits<u32>::max()}; //!< The maximum amount of subpasses within a renderpass, this is limited to 64 on older Adreno proprietary drivers
             vk::QueueGlobalPriorityEXT maxGlobalPriority{vk::QueueGlobalPriorityEXT::eMedium}; //!< The highest allowed global priority of the queue, drivers will not allow higher priorities to be set on queues
@@ -98,7 +101,9 @@ namespace skyline::gpu {
             vk::PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT,
             vk::PhysicalDeviceImagelessFramebufferFeatures,
             vk::PhysicalDeviceTransformFeedbackFeaturesEXT,
-            vk::PhysicalDeviceIndexTypeUint8FeaturesEXT>;
+            vk::PhysicalDeviceIndexTypeUint8FeaturesEXT,
+            vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT,
+            vk::PhysicalDeviceRobustness2FeaturesEXT>;
 
         TraitManager(const DeviceFeatures2 &deviceFeatures2, DeviceFeatures2 &enabledFeatures2, const std::vector<vk::ExtensionProperties> &deviceExtensions, std::vector<std::array<char, VK_MAX_EXTENSION_NAME_SIZE>> &enabledExtensions, const DeviceProperties2 &deviceProperties2, const vk::raii::PhysicalDevice& physicalDevice);
 

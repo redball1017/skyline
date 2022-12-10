@@ -225,7 +225,7 @@ namespace skyline::gpu {
                 return true; // If the texture is already CPU dirty or we can transition it to being CPU dirty then we don't need to do anything
             }
 
-            if (texture->accumulatedGuestWaitTime > SkipReadbackHackWaitTimeThreshold && *texture->gpu.state.settings->enableTextureReadbackHack) {
+            if (texture->accumulatedGuestWaitTime > SkipReadbackHackWaitTimeThreshold && *texture->gpu.state.settings->enableFastGpuReadbackHack) {
                 texture->dirtyState = DirtyState::Clean;
                 return true;
             }
@@ -825,15 +825,16 @@ namespace skyline::gpu {
         WaitOnBacking();
 
         if (tiling == vk::ImageTiling::eOptimal || !std::holds_alternative<memory::Image>(backing)) {
-            auto stagingBuffer{gpu.memory.AllocateStagingBuffer(surfaceSize)};
+            if (!downloadStagingBuffer)
+                downloadStagingBuffer = gpu.memory.AllocateStagingBuffer(surfaceSize);
 
             WaitOnFence();
             auto lCycle{gpu.scheduler.Submit([&](vk::raii::CommandBuffer &commandBuffer) {
-                CopyIntoStagingBuffer(commandBuffer, stagingBuffer);
+                CopyIntoStagingBuffer(commandBuffer, downloadStagingBuffer);
             })};
             lCycle->Wait(); // We block till the copy is complete
 
-            CopyToGuest(stagingBuffer->data());
+            CopyToGuest(downloadStagingBuffer->data());
         } else if (tiling == vk::ImageTiling::eLinear) {
             // We can optimize linear texture sync on a UMA by mapping the texture onto the CPU and copying directly from it rather than using a staging buffer
             WaitOnFence();
